@@ -42,7 +42,11 @@ fetch('/assets/search-index.json').then(r=>r.json()).then(d=>{IDX=d;run()});
 const q=document.getElementById('q'), res=document.getElementById('results');
 function run(){const t=(q.value||'').toLowerCase().trim();
   const hits=(t? IDX.filter(x=>x.s.includes(t)) : IDX).slice(0,120);
-  res.innerHTML=hits.map(x=>`<a class="card" href="${x.u}"><span class="thumb"><img src="${x.t}" alt="${x.a}" loading="lazy" width="520"></span><span class="cap">${x.n}</span></a>`).join('')||'<p>No matches — try another word.</p>';}
+  const SIZES="(max-width:560px) 155px, 250px";
+  const im=x=>{const wh=(x.w&&x.h)?` width="${x.w}" height="${x.h}"`:"";
+    const ss=(x.f&&x.fw&&x.w&&x.fw>x.w)?` srcset="${x.t} ${x.w}w, ${x.f} ${x.fw}w" sizes="${SIZES}"`:"";
+    return `<img src="${x.t}" alt="${x.a}" loading="lazy" decoding="async"${wh}${ss}>`;};
+  res.innerHTML=hits.map(x=>`<a class="card" href="${x.u}"><span class="thumb">${im(x)}</span><span class="cap">${x.n}</span></a>`).join('')||'<p>No matches — try another word.</p>';}
 q.addEventListener('input',run);
 </script>
 </main>
